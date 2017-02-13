@@ -1,0 +1,30 @@
+{
+  "name": "slide.js",
+  "version": "1.0.0",
+  "description": "A Node presentation slide framework",
+  "main": "bin/index.js",
+  "scripts": {
+    "start": "npm install && node ."
+  },
+  "keywords": [
+    "slides",
+    "presentation",
+    "talk"
+  ],
+  "author": "@felixfong227",
+  "license": "MIT",
+  "dependencies": {
+    "ejs": "^2.5.5",
+    "express": "^4.14.1"
+  },
+
+  "slideConfig": {
+    "pageRoot": "pages",
+    "name": "slide.js Demo",
+    "slides": [
+      "welcome",
+      "second"
+    ],
+    "port": "8080"
+  }
+}
