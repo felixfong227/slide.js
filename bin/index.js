@@ -19,6 +19,9 @@ app.set("view engine", "ejs");
 app.set("views", path.join(`${__dirname}/../${slideConfig.pageRoot}`));
 app.use('/static', express.static(path.join(__dirname, '/../static')));
 
+// User request custom static file, like custom CSS or JS files
+app.use('/src', express.static(path.join(__dirname, `/../${slideConfig.pageRoot}/`)));
+
 const slides = slideConfig.slides;
 
 
@@ -41,6 +44,14 @@ app.get("/", (req,res) => {
 
 app.get("/api", (req,res) => {
 
+    function renderPage(res,pagePath) {
+        res.render(pagePath, {
+           title: slideConfig.name
+            ,currentPage: currentPage
+            ,appName: packageJSON.name
+        });
+    }
+
     const query = req.query;
     const load = query.load;
 
@@ -49,18 +60,20 @@ app.get("/api", (req,res) => {
         if(currentPage < slidePages.length){
             const pagePath = path.join(slidePages[currentPage]);
             currentPage++;
-            res.render(pagePath)
+            renderPage(res, pagePath);
         }
 
     }else if(load == 'backward'){
 
-        if(currentPage <= slidePages.length){
+        if(currentPage <= slidePages.length && currentPage > 0){
             currentPage--;
             const pagePath = path.join(slidePages[currentPage]);
-            res.render(pagePath)
+            renderPage(res, pagePath);
         }
 
 
+    }else if(load == "init"){
+        res.render(slidePages[0])
     }
 
 });
@@ -69,7 +82,7 @@ app.listen(slideConfig.port, () => {
 
     console.log(`${packageJSON.name} is serving web server at port ${slideConfig.port}`);
     // Start the browser
-    // require("open")(`http://localhost:${slideConfig.port}`);
+    require("open")(`http://localhost:${slideConfig.port}`);
     // Sorry, maybe I'm just really too lazy to write the OS check script :P
 
 });

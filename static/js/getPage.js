@@ -1,5 +1,4 @@
 // When the user click the web page
-const ajax = new XMLHttpRequest();
 
 // Get forward page
 window.addEventListener("click", e => {

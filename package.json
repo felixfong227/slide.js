@@ -23,8 +23,9 @@
     "pageRoot": "pages",
     "name": "slide.js Demo",
     "slides": [
-      "welcome",
-      "second"
+      "welcome"
+      ,"second"
+      ,"end"
     ],
     "port": "8080"
   }
