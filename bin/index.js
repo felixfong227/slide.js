@@ -86,7 +86,7 @@ app.listen(slideConfig.port, () => {
 
     console.log(`${packageJSON.name} is serving web server at port ${slideConfig.port}`);
     // Start the browser
-    // require("open")(`http://localhost:${slideConfig.port}`);
+    require("open")(`http://localhost:${slideConfig.port}`);
     // Sorry, maybe I'm just really too lazy to write the OS check script :P
 
 });
