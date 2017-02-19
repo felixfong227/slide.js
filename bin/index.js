@@ -7,8 +7,6 @@ const fs = require("fs")
     ,bodyParser = require('body-parser');
 ;
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded());
 // in latest body-parser use like below.
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -42,47 +40,53 @@ app.get("/", (req,res) => {
 
 });
 
-app.get("/api", (req,res) => {
+function renderPage(res,pagePath) {
+    res.render(pagePath, {
+        title: slideConfig.name
+        ,currentPage: currentPage
+        ,appName: packageJSON.name
+    });
+}
 
-    function renderPage(res,pagePath) {
-        res.render(pagePath, {
-           title: slideConfig.name
-            ,currentPage: currentPage
-            ,appName: packageJSON.name
-        });
+
+app.get("/forward", (req,res) => {
+    if(currentPage < slidePages.length - 1){
+        currentPage++;
+        console.log(`Forward: ${currentPage}`);
+        const pagePath = path.join(slidePages[currentPage]);
+        renderPage(res, pagePath);
     }
 
-    const query = req.query;
-    const load = query.load;
+});
 
-    if(load == "forward"){
+app.get("/backward", (req,res) => {
 
-        if(currentPage < slidePages.length){
-            const pagePath = path.join(slidePages[currentPage]);
-            currentPage++;
-            renderPage(res, pagePath);
-        }
-
-    }else if(load == 'backward'){
-
-        if(currentPage <= slidePages.length && currentPage > 0){
-            currentPage--;
-            const pagePath = path.join(slidePages[currentPage]);
-            renderPage(res, pagePath);
-        }
-
-
-    }else if(load == "init"){
-        res.render(slidePages[0])
+    if(currentPage <= slidePages.length - 1 && currentPage > 0){
+        currentPage--;
+        const pagePath = path.join(slidePages[currentPage]);
+        renderPage(res, pagePath);
     }
 
+});
+
+app.get("/init", (req,res) => {
+    renderPage(res, slidePages[0]);
+});
+
+app.get("/reload", (req,res) => {
+    currentPage = 0;
+});
+
+app.get("/getPage/:page*?", (req,res) => {
+    renderPage(res, slidePages[ req.params.page ]);
+    currentPage = req.params.page;
 });
 
 app.listen(slideConfig.port, () => {
 
     console.log(`${packageJSON.name} is serving web server at port ${slideConfig.port}`);
     // Start the browser
-    require("open")(`http://localhost:${slideConfig.port}`);
+    // require("open")(`http://localhost:${slideConfig.port}`);
     // Sorry, maybe I'm just really too lazy to write the OS check script :P
 
 });

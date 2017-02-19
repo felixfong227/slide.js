@@ -1,0 +1,9 @@
+#main{
+    transition: all 0.2s ease;
+    position: relative;
+}
+
+#main.new{
+    opacity: 0;
+    margin-top: 5em;
+}
