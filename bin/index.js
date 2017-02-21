@@ -40,12 +40,22 @@ app.get("/", (req,res) => {
 
 });
 
-function renderPage(res,pagePath) {
-    res.render(pagePath, {
-        title: slideConfig.name
-        ,currentPage: currentPage
-        ,appName: packageJSON.name
-    });
+function renderPage(res,pagePath,ok) {
+
+    if(ok){
+
+        res.render(pagePath, {
+            title: slideConfig.name
+            ,currentPage: currentPage
+            ,appName: packageJSON.name
+        });
+
+    }else{
+        res.end(JSON.stringify({
+            ok: ok
+        }))
+    }
+
 }
 
 
@@ -54,7 +64,9 @@ app.get("/forward", (req,res) => {
         currentPage++;
         console.log(`Forward: ${currentPage}`);
         const pagePath = path.join(slidePages[currentPage]);
-        renderPage(res, pagePath);
+        renderPage(res, pagePath, true);
+    }else{
+        renderPage(res, null, false);
     }
 
 });
@@ -64,13 +76,15 @@ app.get("/backward", (req,res) => {
     if(currentPage <= slidePages.length - 1 && currentPage > 0){
         currentPage--;
         const pagePath = path.join(slidePages[currentPage]);
-        renderPage(res, pagePath);
+        renderPage(res, pagePath, true);
+    }else{
+        renderPage(res, null, false);
     }
 
 });
 
 app.get("/init", (req,res) => {
-    renderPage(res, slidePages[0]);
+    renderPage(res, slidePages[0],true);
 });
 
 app.get("/reload", (req,res) => {
@@ -78,7 +92,7 @@ app.get("/reload", (req,res) => {
 });
 
 app.get("/getPage/:page*?", (req,res) => {
-    renderPage(res, slidePages[ req.params.page ]);
+    renderPage(res, slidePages[ req.params.page ], true);
     currentPage = req.params.page;
 });
 
@@ -86,7 +100,7 @@ app.listen(slideConfig.port, () => {
 
     console.log(`${packageJSON.name} is serving web server at port ${slideConfig.port}`);
     // Start the browser
-    require("open")(`http://localhost:${slideConfig.port}`);
+    // require("open")(`http://localhost:${slideConfig.port}`);
     // Sorry, maybe I'm just really too lazy to write the OS check script :P
 
 });

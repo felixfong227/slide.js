@@ -1,0 +1,14 @@
+#notification{
+
+    background: #161616;
+    color: #FFF;
+    position: fixed;
+    bottom: -100vh;
+    left: 1em;
+    font-size: 1.5em;
+    transition: all 0.2s ease;
+}
+
+#notification.open{
+    bottom: 1em;
+}
