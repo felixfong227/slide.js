@@ -42,14 +42,22 @@ app.get("/", (req,res) => {
 
 function renderPage(res,pagePath,ok) {
 
+    let returnObject = {
+        title: slideConfig.name
+        ,currentPage: currentPage
+        ,appName: packageJSON.name
+    };
+
+
     if(ok){
 
-        res.render(pagePath, {
-            title: slideConfig.name
-            ,currentPage: currentPage
-            ,appName: packageJSON.name
-        });
+        if(typeof slideConfig.envVariable == "object"){
+            for(key in slideConfig.envVariable){
+                returnObject[key] = slideConfig.envVariable[key];
+            }
+        }
 
+        res.render(pagePath, returnObject);
     }else{
         res.end(JSON.stringify({
             ok: ok
@@ -89,6 +97,7 @@ app.get("/init", (req,res) => {
 
 app.get("/reload", (req,res) => {
     currentPage = 0;
+    console.log('Current page has been set back to 0')
 });
 
 app.get("/getPage/:page*?", (req,res) => {

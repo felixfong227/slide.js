@@ -41,6 +41,8 @@ changePage(`http://localhost:${config.port}/init`, data => {
 
 
 // If the user is reloading the browser, then send a request to restart the API
-window.onbeforeunload = e => {
-    ajax(`http://localhost:${config.port}/reload`);
+window.onbeforeunload = function() {
+    const ajax = new XMLHttpRequest();
+    ajax.open('GET',`http://localhost:${config.port}/reload`);
+    ajax.send();
 };
